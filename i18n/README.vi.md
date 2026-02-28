@@ -1,66 +1,94 @@
 [English](../README.md) · [العربية](README.ar.md) · [Español](README.es.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [中文 (简体)](README.zh-Hans.md) · [中文（繁體）](README.zh-Hant.md) · [Deutsch](README.de.md) · [Русский](README.ru.md)
 
 
+[![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
+
 # @sapphi-red/web-noise-suppressor
 
-**Tùy chọn ngôn ngữ:** Tiếng Anh (`README.md`) | thư mục i18n: `i18n/` (hiện chưa có tệp README đã dịch)
-
-[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor)
+[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red/web-noise-suppressor)
 ![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF)
 ![License](https://img.shields.io/badge/License-MIT-22C55E)
+[![Stars](https://img.shields.io/github/stars/sapphi-red/web-noise-suppressor?style=flat-square)](https://github.com/sapphi-red/web-noise-suppressor/stargazers)
 
-Các node khử nhiễu cho Web Audio API.
+Các node khử tiếng ồn cho Web Audio API — thiết kế để làm sạch tiếng nói từ microphone theo thời gian thực trên trình duyệt.
 
-[🎧 Demo](https://web-noise-suppressor.sapphi.red)
+[![🎧 Try Demo](https://img.shields.io/badge/🎧-Live_Demo-0EA5E9?style=for-the-badge)](https://web-noise-suppressor.sapphi.red)
+[![📦 npm](https://img.shields.io/badge/📦-npm_Install-18181B?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
 
-Gói này cung cấp ba node khử nhiễu.
+| Tiêu chí | Nội dung README |
+| --- | --- |
+| Runtime | Pipeline Web Audio Worklet để khử tiếng ồn trên trình duyệt |
+| Kết quả chính | `NoiseGateWorkletNode`, `RnnoiseWorkletNode`, `SpeexWorkletNode` |
+| Mẫu sử dụng | Tải WASM → đăng ký processor → tạo node → nối graph |
+
+Gói này cung cấp ba node khử tiếng ồn.
 
 | Node | Mô tả | Backend |
 | --- | --- | --- |
 | `NoiseGateWorkletNode` | Triển khai noise gate đơn giản | Logic gốc |
-| `RnnoiseWorkletNode` | Bộ khử nhiễu dựa trên RNNoise | [xiph/rnnoise](https://github.com/xiph/rnnoise) thông qua [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
-| `SpeexWorkletNode` | Bộ khử nhiễu Speex preprocess | `preprocess` của [xiph/speexdsp](https://github.com/xiph/speexdsp) thông qua [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
+| `RnnoiseWorkletNode` | Bộ khử tiếng ồn dựa trên RNNoise | [xiph/rnnoise](https://github.com/xiph/rnnoise) qua [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
+| `SpeexWorkletNode` | Bộ khử tiếng ồn Speex preprocess | `preprocess` của [xiph/speexdsp](https://github.com/xiph/speexdsp) qua [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
 
 > [!IMPORTANT]
 > Gói này yêu cầu `AudioWorklet` để hoạt động.
 
 ## Tổng quan
 
-`@sapphi-red/web-noise-suppressor` là thư viện TypeScript tập trung cho trình duyệt, cung cấp các wrapper `AudioWorkletNode` để làm sạch âm thanh đầu vào theo thời gian thực. Thư viện được thiết kế cho pipeline microphone và có thể dùng cùng các ràng buộc WebRTC của trình duyệt (`noiseSuppression`, `echoCancellation`) khi cần.
+`@sapphi-red/web-noise-suppressor` là thư viện TypeScript hướng trình duyệt, cung cấp wrapper cho `AudioWorkletNode` để làm sạch đầu vào theo thời gian thực. Được thiết kế cho pipeline micro và có thể dùng cùng các ràng buộc WebRTC của trình duyệt (`noiseSuppression`, `echoCancellation`) khi cần.
 
-Luồng cốt lõi là:
+Luồng hoạt động chính là:
 
-1. Tải binary wasm (`loadSpeex` / `loadRnnoise`).
+1. Tải nhị phân wasm (`loadSpeex` / `loadRnnoise`).
 2. Đăng ký module worklet processor (`audioWorklet.addModule(...)`).
-3. Khởi tạo node (`new SpeexWorkletNode(...)`, v.v.).
+3. Tạo node (`new SpeexWorkletNode(...)`, v.v.).
 4. Kết nối đồ thị âm thanh.
+
+## Mục lục
+
+- [Tổng quan](#tổng-quan)
+- [Tính năng](#tính-năng)
+- [Cài đặt](#cài-đặt)
+- [Yêu cầu](#yêu-cầu)
+- [Cách dùng](#cách-dùng)
+- [Cấu hình](#cấu-hình)
+- [Cấu trúc dự án](#cấu-trúc-dự-án)
+- [Ví dụ](#ví-dụ)
+- [Phát triển](#phát-triển)
+- [Ghi chú phát triển](#ghi-chú-phát-triển)
+- [Khắc phục sự cố](#khắc-phục-sự-cố)
+- [❤️ Support](#-support)
+- [Lộ trình](#lộ-trình)
+- [Đóng góp](#đóng-góp)
+- [Giấy phép](#giấy-phép)
 
 ## Tính năng
 
-- Ba tùy chọn xử lý với cùng một mẫu sử dụng Web Audio.
-- Xuất entrypoint thư viện dạng ESM + CJS.
-- Các đường dẫn export riêng cho tệp JS worklet và binary wasm.
-- Hỗ trợ phát hiện SIMD của RNNoise thông qua `loadRnnoise`.
-- Ứng dụng demo (`demo/`) với định tuyến microphone trực tiếp và visualizer.
+- Ba lựa chọn xử lý với cùng một mẫu sử dụng Web Audio.
+- Điểm vào thư viện ESM + CJS.
+- Đường dẫn export riêng cho file JS worklet và binary wasm.
+- Hỗ trợ phát hiện SIMD RNNoise thông qua `loadRnnoise`.
+- Ứng dụng demo (`demo/`) với định tuyến micro trực tiếp và visualizer.
 
 ## Cài đặt
 
 ```shell
-npm i @sapphi-red/web-noise-suppressor # yarn add @sapphi-red/web-noise-suppressor
+npm i @sapphi-red/web-noise-suppressor
+# yarn add @sapphi-red/web-noise-suppressor
+# pnpm add @sapphi-red/web-noise-suppressor
 ```
 
-## Điều kiện tiên quyết
+## Yêu cầu
 
-- Trình duyệt/runtime có hỗ trợ `AudioWorklet`.
-- Môi trường bảo mật cho thu microphone (`https://` hoặc localhost).
-- Cách cấu hình bundler có thể cung cấp tham chiếu URL cho tệp JS worklet và tệp wasm.
-  - Các ví dụ trong tài liệu được viết theo hướng Vite.
+- Trình duyệt/runtime hỗ trợ `AudioWorklet`.
+- Môi trường an toàn cho việc ghi âm microphone (`https://` hoặc localhost).
+- Chiến lược bundler có thể cung cấp tham chiếu URL cho file JS của worklet và file wasm.
+  - Các ví dụ trong tài liệu được thiết kế theo hướng Vite.
 
 ## Cách dùng
 
-Phần này chỉ được viết cho người dùng vite.
+Phần này chỉ viết cho người dùng Vite.
 
 ```ts
 import { SpeexWorkletNode, loadSpeex } from '@sapphi-red/web-noise-suppressor'
@@ -86,7 +114,7 @@ source.connect(speex)
 speex.connect(ctx.destination)
 ```
 
-Để biết thêm chi tiết, xem [mã nguồn demo](https://github.com/sapphi-red/web-noise-suppressor/blob/main/demo/src/index.ts).
+Xem thêm chi tiết ở [mã nguồn demo](https://github.com/sapphi-red/web-noise-suppressor/blob/main/demo/src/index.ts).
 
 ## Cấu hình
 
@@ -106,7 +134,7 @@ speex.connect(ctx.destination)
 
 ### Tải RNNoise
 
-`loadRnnoise` chấp nhận cả URL non-SIMD và SIMD, sau đó chọn một phiên bản tại runtime:
+`loadRnnoise` chấp nhận URL non-SIMD và SIMD và chọn một trong hai lúc runtime:
 
 ```ts
 const rnnoiseWasmBinary = await loadRnnoise({
@@ -115,9 +143,9 @@ const rnnoiseWasmBinary = await loadRnnoise({
 })
 ```
 
-### Các subpath được export
+### Đường dẫn export con
 
-Gói xuất ra các đường dẫn sau:
+Gói cung cấp các subpath sau:
 
 - `@sapphi-red/web-noise-suppressor`
 - `@sapphi-red/web-noise-suppressor/noiseGateWorklet.js`
@@ -190,7 +218,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 │   └── index.ts            # public API exports
 ├── demo/                   # Vite demo application
 ├── patches/                # pnpm patch for rnnoise-wasm
-├── i18n/                   # translation artifacts (currently empty)
+├── i18n/                   # translation artifacts
 ├── tsdown.config.ts        # build config
 └── package.json
 ```
@@ -203,7 +231,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 pnpm install
 ```
 
-### Script ở thư mục gốc
+### Script gốc
 
 ```shell
 pnpm run build
@@ -213,7 +241,7 @@ pnpm run type-check
 pnpm run test
 ```
 
-### Script cho demo
+### Script demo
 
 ```shell
 pnpm --filter @sapphi-red/web-noise-suppressor-demo dev
@@ -221,7 +249,7 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo build
 pnpm --filter @sapphi-red/web-noise-suppressor-demo preview
 ```
 
-Từ `demo/package.json`, cũng có `build:all`:
+Từ `demo/package.json`, có sẵn lệnh `build:all`:
 
 ```shell
 pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
@@ -229,23 +257,37 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
 
 ## Ghi chú phát triển
 
-- Node worklet RNNoise có giả định 48kHz (`src/rnnoise/workletNode.ts`).
-- `RnnoiseWorkletNode` và `SpeexWorkletNode` cung cấp `destroy()` để giải phóng tài nguyên phía wasm.
-- Output build được tạo bởi `tsdown` và bao gồm các tài nguyên wasm đã sao chép vào `dist/`.
-- Một bản vá cục bộ được áp dụng cho `@shiguredo/rnnoise-wasm` thông qua patched dependencies của pnpm.
+- Node worklet RNNoise có giả định tần số lấy mẫu 48kHz (`src/rnnoise/workletNode.ts`).
+- `RnnoiseWorkletNode` và `SpeexWorkletNode` cung cấp `destroy()` để giải phóng tài nguyên ở phía wasm.
+- Đầu ra build được sinh bởi `tsdown` và bao gồm tài nguyên wasm đã sao chép vào `dist/`.
+- Một patch cục bộ được áp dụng cho `@shiguredo/rnnoise-wasm` thông qua các dependency đã vá của pnpm.
 
 ## Khắc phục sự cố
 
 - `AudioWorklet is not defined`
-  - Xác minh trình duyệt có hỗ trợ và đang chạy trong secure context.
+  - Kiểm tra trình duyệt có hỗ trợ và đang chạy trong secure context.
 - `Failed to execute 'addModule'`
-  - Đảm bảo đường dẫn JS worklet được resolve thành URL hợp lệ tại runtime.
-- Lỗi tải wasm (`fetch`/404/CORS)
-  - Xác nhận tài nguyên wasm đã được sao chép/phục vụ và chiến lược import URL của bundler là chính xác.
-- Không có hiệu ứng nghe được
-  - Kiểm tra nối graph (`source -> node -> destination`) và xem các ràng buộc WebRTC có đang được bật đồng thời không.
-- Hành vi RNNoise có vẻ không ổn định
-  - Dùng hoặc kiểm thử với audio context/sample rate 48kHz.
+  - Đảm bảo đường dẫn JS của worklet được resolve thành URL hợp lệ tại runtime.
+- Lỗi khi tải wasm (`fetch`/404/CORS)
+  - Kiểm tra tài nguyên wasm được sao chép/phục vụ đúng và chiến lược import URL của bundler là chính xác.
+- Không có hiệu ứng nghe thấy
+  - Kiểm tra việc nối graph (`source -> node -> destination`) và xem các ràng buộc WebRTC có đồng thời bật không.
+- Hành vi RNNoise không ổn định
+  - Sử dụng/kiểm thử với audio context có sample rate 48kHz.
+
+| Symptom | What to check |
+| --- | --- |
+| `AudioWorklet is not defined` | Kiểm tra hỗ trợ trình duyệt và secure context. |
+| `Failed to execute 'addModule'` | Đảm bảo đường dẫn JS của worklet được resolve thành URL hợp lệ ở runtime. |
+| Lỗi khi tải wasm (`fetch`/404/CORS) | Kiểm tra tài nguyên wasm đã sao chép/phục vụ và chiến lược import URL của bundler có đúng hay không. |
+| Không có hiệu ứng nghe thấy | Kiểm tra việc nối graph (`source -> node -> destination`) và xem các ràng buộc WebRTC có đang bật cùng lúc không. |
+| RNNoise có vẻ không ổn định | Dùng hoặc kiểm thử với audio context/sample rate 48kHz. |
+
+## ❤️ Support
+
+| Donate | PayPal | Stripe |
+|---|---|---|
+| [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=ko-fi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
 ## Lộ trình
 
@@ -260,7 +302,7 @@ Issue và pull request đều được hoan nghênh:
 - Issues: <https://github.com/sapphi-red/web-noise-suppressor/issues>
 - Repository: <https://github.com/sapphi-red/web-noise-suppressor>
 
-Trước khi mở PR, hãy chạy:
+Trước khi mở PR, vui lòng chạy:
 
 ```shell
 pnpm run lint
@@ -271,4 +313,4 @@ pnpm run type-check
 
 ## Giấy phép
 
-MIT License. Xem [LICENSE](./LICENSE).
+Giấy phép MIT. Xem [LICENSE](./LICENSE).

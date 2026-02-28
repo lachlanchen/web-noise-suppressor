@@ -1,17 +1,27 @@
 [English](README.md) · [العربية](i18n/README.ar.md) · [Español](i18n/README.es.md) · [Français](i18n/README.fr.md) · [日本語](i18n/README.ja.md) · [한국어](i18n/README.ko.md) · [Tiếng Việt](i18n/README.vi.md) · [中文 (简体)](i18n/README.zh-Hans.md) · [中文（繁體）](i18n/README.zh-Hant.md) · [Deutsch](i18n/README.de.md) · [Русский](i18n/README.ru.md)
 
+
+[![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
+
 # @sapphi-red/web-noise-suppressor
 
-
-[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor)
+[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red/web-noise-suppressor)
 ![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF)
 ![License](https://img.shields.io/badge/License-MIT-22C55E)
+[![Stars](https://img.shields.io/github/stars/sapphi-red/web-noise-suppressor?style=flat-square)](https://github.com/sapphi-red/web-noise-suppressor/stargazers)
 
-Noise suppressor nodes for Web Audio API.
+Noise suppressor nodes for Web Audio API — built for browser-side real-time microphone cleanup.
 
-[🎧 Demo](https://web-noise-suppressor.sapphi.red)
+[![🎧 Try Demo](https://img.shields.io/badge/🎧-Live_Demo-0EA5E9?style=for-the-badge)](https://web-noise-suppressor.sapphi.red)
+[![📦 npm](https://img.shields.io/badge/📦-npm_Install-18181B?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
+
+| Focus | What this README covers |
+| --- | --- |
+| Runtime | Web Audio Worklet pipeline for browser noise suppression |
+| Core output | `NoiseGateWorkletNode`, `RnnoiseWorkletNode`, `SpeexWorkletNode` |
+| Usage pattern | Load WASM → register processor → instantiate node → connect graph |
 
 This package provides three noise suppression nodes.
 
@@ -35,6 +45,24 @@ The core flow is:
 3. Construct node (`new SpeexWorkletNode(...)`, etc.).
 4. Connect audio graph.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Project Structure](#project-structure)
+- [Examples](#examples)
+- [Development](#development)
+- [Development Notes](#development-notes)
+- [Troubleshooting](#troubleshooting)
+- [❤️ Support](#-support)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 - Three processing options with a shared Web Audio usage pattern.
@@ -43,10 +71,12 @@ The core flow is:
 - RNNoise SIMD detection support through `loadRnnoise`.
 - Demo app (`demo/`) with live microphone routing and visualizer.
 
-## Install
+## Installation
 
 ```shell
-npm i @sapphi-red/web-noise-suppressor # yarn add @sapphi-red/web-noise-suppressor
+npm i @sapphi-red/web-noise-suppressor
+# yarn add @sapphi-red/web-noise-suppressor
+# pnpm add @sapphi-red/web-noise-suppressor
 ```
 
 ## Prerequisites
@@ -238,12 +268,19 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
   - Verify browser support and secure context.
 - `Failed to execute 'addModule'`
   - Ensure worklet JS path resolves to a valid URL at runtime.
-- wasm load failures (`fetch`/404/CORS)
-  - Confirm wasm assets are copied/served and your bundler URL import strategy is correct.
-- No audible effect
-  - Check graph wiring (`source -> node -> destination`) and whether WebRTC constraints are also enabled.
-- RNNoise behavior seems unstable
-  - Use or test with 48kHz audio context/sample rate.
+| Symptom | What to check |
+| --- | --- |
+| `AudioWorklet is not defined` | Verify browser support and secure context. |
+| `Failed to execute 'addModule'` | Ensure worklet JS path resolves to a valid URL at runtime. |
+| wasm load failures (`fetch`/404/CORS) | Confirm wasm assets are copied/served and your bundler URL import strategy is correct. |
+| No audible effect | Check graph wiring (`source -> node -> destination`) and whether WebRTC constraints are also enabled. |
+| RNNoise behavior seems unstable | Use or test with a 48kHz audio context/sample rate. |
+
+## ❤️ Support
+
+| Donate | PayPal | Stripe |
+|---|---|---|
+| [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=ko-fi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
 ## Roadmap
 

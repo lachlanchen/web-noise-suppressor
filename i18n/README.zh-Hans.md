@@ -1,28 +1,38 @@
 [English](../README.md) · [العربية](README.ar.md) · [Español](README.es.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [中文 (简体)](README.zh-Hans.md) · [中文（繁體）](README.zh-Hant.md) · [Deutsch](README.de.md) · [Русский](README.ru.md)
 
 
+[![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
+
 # @sapphi-red/web-noise-suppressor
 
-[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor)
+[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red/web-noise-suppressor)
 ![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF)
 ![License](https://img.shields.io/badge/License-MIT-22C55E)
+[![Stars](https://img.shields.io/github/stars/sapphi-red/web-noise-suppressor?style=flat-square)](https://github.com/sapphi-red/web-noise-suppressor/stargazers)
 
-用于 Web Audio API 的噪声抑制节点。
+用于 Web Audio API 的噪声抑制节点 — 适合浏览器端实时麦克风降噪。
 
-[🎧 Demo](https://web-noise-suppressor.sapphi.red)
+[![🎧 Try Demo](https://img.shields.io/badge/🎧-Live_Demo-0EA5E9?style=for-the-badge)](https://web-noise-suppressor.sapphi.red)
+[![📦 npm](https://img.shields.io/badge/📦-npm_Install-18181B?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
+
+| 关注点 | 本 README 覆盖内容 |
+| --- | --- |
+| 运行时 | 浏览器端噪声抑制的 Web Audio Worklet 流水线 |
+| 核心产物 | `NoiseGateWorkletNode`、`RnnoiseWorkletNode`、`SpeexWorkletNode` |
+| 使用模式 | 加载 WASM → 注册处理器 → 实例化节点 → 连接音频图 |
 
 本包提供三种噪声抑制节点。
 
 | 节点 | 说明 | 后端 |
 | --- | --- | --- |
-| `NoiseGateWorkletNode` | 一个简单的噪声门实现 | 原生逻辑 |
+| `NoiseGateWorkletNode` | 简单的噪声门实现 | 原生逻辑 |
 | `RnnoiseWorkletNode` | 基于 RNNoise 的抑制器 | [xiph/rnnoise](https://github.com/xiph/rnnoise) via [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
 | `SpeexWorkletNode` | Speex preprocess 抑制器 | [xiph/speexdsp](https://github.com/xiph/speexdsp) `preprocess` via [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
 
 > [!IMPORTANT]
-> 此包依赖 `AudioWorklet` 才能工作。
+> 此软件包需要 `AudioWorklet` 才能工作。
 
 ## 概览
 
@@ -35,30 +45,50 @@
 3. 构造节点（`new SpeexWorkletNode(...)` 等）。
 4. 连接音频图。
 
+## 目录
+
+- [概览](#概览)
+- [特性](#特性)
+- [安装](#安装)
+- [先决条件](#先决条件)
+- [用法](#用法)
+- [配置](#配置)
+- [项目结构](#项目结构)
+- [示例](#示例)
+- [开发](#开发)
+- [开发说明](#开发说明)
+- [故障排查](#故障排查)
+- [❤️ Support](#-support)
+- [路线图](#路线图)
+- [贡献](#贡献)
+- [许可证](#许可证)
+
 ## 特性
 
 - 三种处理选项，共享一致的 Web Audio 使用模式。
-- 提供 ESM + CJS 库入口导出。
+- 提供 ESM + CJS 的库入口导出。
 - 为 worklet JS 文件和 wasm 二进制提供独立导出路径。
 - `loadRnnoise` 支持 RNNoise SIMD 检测。
-- 包含演示应用（`demo/`），支持实时麦克风路由与可视化。
+- 包含演示应用（`demo/`），带有实时麦克风路由与可视化。
 
 ## 安装
 
 ```shell
-npm i @sapphi-red/web-noise-suppressor # yarn add @sapphi-red/web-noise-suppressor
+npm i @sapphi-red/web-noise-suppressor
+# yarn add @sapphi-red/web-noise-suppressor
+# pnpm add @sapphi-red/web-noise-suppressor
 ```
 
-## 前置条件
+## 先决条件
 
-- 浏览器/运行时需支持 `AudioWorklet`。
+- 浏览器或运行时需支持 `AudioWorklet`。
 - 麦克风采集需要安全上下文（`https://` 或 localhost）。
-- 你需要一种 bundler 方案来为 worklet JS 和 wasm 文件提供 URL 引用。
+- 需要一套打包策略，能为 worklet JS 和 wasm 文件提供 URL 引用。
   - 文档中的示例以 Vite 为导向。
 
 ## 用法
 
-本节仅面向 vite 用户编写。
+本节仅面向 Vite 用户编写。
 
 ```ts
 import { SpeexWorkletNode, loadSpeex } from '@sapphi-red/web-noise-suppressor'
@@ -219,7 +249,7 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo build
 pnpm --filter @sapphi-red/web-noise-suppressor-demo preview
 ```
 
-在 `demo/package.json` 中，还提供了 `build:all`：
+`demo/package.json` 中也提供了 `build:all`：
 
 ```shell
 pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
@@ -238,17 +268,24 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
   - 请确认浏览器支持和安全上下文设置。
 - `Failed to execute 'addModule'`
   - 确保 worklet JS 路径在运行时可解析为有效 URL。
-- wasm 加载失败（`fetch`/404/CORS）
-  - 确认 wasm 资源已被复制/托管，并且 bundler 的 URL 导入策略正确。
-- 听感上没有效果
-  - 检查音频图连接（`source -> node -> destination`）以及是否同时启用了 WebRTC 约束。
-- RNNoise 行为看起来不稳定
-  - 请使用或测试 48kHz 的音频上下文/采样率。
+| 症状 | 检查项 |
+| --- | --- |
+| `AudioWorklet is not defined` | 请确认浏览器支持和安全上下文。 |
+| `Failed to execute 'addModule'` | 确保 worklet JS 路径在运行时解析为有效 URL。 |
+| wasm 加载失败（`fetch`/404/CORS） | 确认 wasm 资源已被复制/托管，并且 bundler 的 URL 引入策略正确。 |
+| 听不出效果 | 检查音频图连接（`source -> node -> destination`）以及是否也启用了 WebRTC 约束。 |
+| RNNoise 表现看起来不稳定 | 请在 48kHz 音频上下文/采样率下使用或测试。 |
+
+## ❤️ Support
+
+| Donate | PayPal | Stripe |
+|---|---|---|
+| [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=ko-fi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
 
 ## 路线图
 
 - 扩展非 Vite 集成文档。
-- 在 `i18n/` 下添加 README 多语言版本。
+- 在 `i18n/` 下补充更多 README 翻译。
 - 更详细地记录性能特征和处理器取舍。
 
 ## 贡献
@@ -258,7 +295,7 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
 - Issues: <https://github.com/sapphi-red/web-noise-suppressor/issues>
 - Repository: <https://github.com/sapphi-red/web-noise-suppressor>
 
-在提交 PR 之前，请先运行：
+在提交 PR 前，请先运行：
 
 ```shell
 pnpm run lint
@@ -269,4 +306,4 @@ pnpm run type-check
 
 ## 许可证
 
-MIT License. See [LICENSE](./LICENSE).
+MIT 许可证。参见 [LICENSE](./LICENSE)。
