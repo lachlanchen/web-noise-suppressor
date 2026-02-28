@@ -1,7 +1,7 @@
-[English](README.md) · [العربية](i18n/README.ar.md) · [Español](i18n/README.es.md) · [Français](i18n/README.fr.md) · [日本語](i18n/README.ja.md) · [한국어](i18n/README.ko.md) · [Tiếng Việt](i18n/README.vi.md) · [中文 (简体)](i18n/README.zh-Hans.md) · [中文（繁體）](i18n/README.zh-Hant.md) · [Deutsch](i18n/README.de.md) · [Русский](i18n/README.ru.md)
+[English](../README.md) · [العربية](README.ar.md) · [Español](README.es.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [中文 (简体)](README.zh-Hans.md) · [中文（繁體）](README.zh-Hant.md) · [Deutsch](README.de.md) · [Русский](README.ru.md)
+
 
 # @sapphi-red/web-noise-suppressor
-
 
 [![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor)
 ![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)
@@ -9,56 +9,56 @@
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF)
 ![License](https://img.shields.io/badge/License-MIT-22C55E)
 
-Noise suppressor nodes for Web Audio API.
+Rauschunterdrückungs-Nodes für die Web Audio API.
 
 [🎧 Demo](https://web-noise-suppressor.sapphi.red)
 
-This package provides three noise suppression nodes.
+Dieses Paket stellt drei Nodes zur Rauschunterdrückung bereit.
 
-| Node | Description | Backend |
+| Node | Beschreibung | Backend |
 | --- | --- | --- |
-| `NoiseGateWorkletNode` | A simple noise gate implementation | Native logic |
-| `RnnoiseWorkletNode` | RNNoise-based suppressor | [xiph/rnnoise](https://github.com/xiph/rnnoise) via [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
-| `SpeexWorkletNode` | Speex preprocess suppressor | [xiph/speexdsp](https://github.com/xiph/speexdsp) `preprocess` via [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
+| `NoiseGateWorkletNode` | Eine einfache Noise-Gate-Implementierung | Native Logik |
+| `RnnoiseWorkletNode` | RNNoise-basierter Unterdrücker | [xiph/rnnoise](https://github.com/xiph/rnnoise) über [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
+| `SpeexWorkletNode` | Speex-Preprocess-Unterdrücker | [xiph/speexdsp](https://github.com/xiph/speexdsp) `preprocess` über [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
 
 > [!IMPORTANT]
-> This package requires `AudioWorklet` to work.
+> Dieses Paket benötigt `AudioWorklet`, um zu funktionieren.
 
-## Overview
+## Überblick
 
-`@sapphi-red/web-noise-suppressor` is a browser-focused TypeScript library that exposes `AudioWorkletNode` wrappers for real-time input cleanup. It is designed for microphone pipelines and can be used alongside browser WebRTC constraints (`noiseSuppression`, `echoCancellation`) when needed.
+`@sapphi-red/web-noise-suppressor` ist eine browserorientierte TypeScript-Bibliothek, die `AudioWorkletNode`-Wrapper für die Echtzeit-Bereinigung von Eingangssignalen bereitstellt. Sie ist für Mikrofon-Pipelines ausgelegt und kann bei Bedarf zusammen mit Browser-WebRTC-Constraints (`noiseSuppression`, `echoCancellation`) verwendet werden.
 
-The core flow is:
+Der grundlegende Ablauf ist:
 
-1. Load wasm binary (`loadSpeex` / `loadRnnoise`).
-2. Register worklet processor module (`audioWorklet.addModule(...)`).
-3. Construct node (`new SpeexWorkletNode(...)`, etc.).
-4. Connect audio graph.
+1. Wasm-Binärdatei laden (`loadSpeex` / `loadRnnoise`).
+2. Worklet-Processor-Modul registrieren (`audioWorklet.addModule(...)`).
+3. Node erzeugen (`new SpeexWorkletNode(...)` usw.).
+4. Audio-Graph verbinden.
 
-## Features
+## Funktionen
 
-- Three processing options with a shared Web Audio usage pattern.
-- ESM + CJS library entrypoint exports.
-- Dedicated export paths for worklet JS files and wasm binaries.
-- RNNoise SIMD detection support through `loadRnnoise`.
-- Demo app (`demo/`) with live microphone routing and visualizer.
+- Drei Verarbeitungsoptionen mit einem gemeinsamen Web-Audio-Nutzungsmuster.
+- Bibliotheks-Entrypoint-Exporte für ESM + CJS.
+- Dedizierte Exportpfade für Worklet-JS-Dateien und Wasm-Binärdateien.
+- RNNoise-SIMD-Erkennungsunterstützung über `loadRnnoise`.
+- Demo-App (`demo/`) mit Live-Mikrofon-Routing und Visualizer.
 
-## Install
+## Installation
 
 ```shell
 npm i @sapphi-red/web-noise-suppressor # yarn add @sapphi-red/web-noise-suppressor
 ```
 
-## Prerequisites
+## Voraussetzungen
 
-- A browser/runtime with `AudioWorklet` support.
-- A secure context for microphone capture (`https://` or localhost).
-- A bundler strategy that can provide URL references for worklet JS and wasm files.
-  - The documented examples are Vite-oriented.
+- Ein Browser/eine Runtime mit `AudioWorklet`-Unterstützung.
+- Ein sicherer Kontext für Mikrofonzugriff (`https://` oder localhost).
+- Eine Bundler-Strategie, die URL-Referenzen für Worklet-JS- und Wasm-Dateien bereitstellen kann.
+  - Die dokumentierten Beispiele sind auf Vite ausgerichtet.
 
-## Usage
+## Verwendung
 
-This section is written only for vite users.
+Dieser Abschnitt ist nur für Vite-Nutzer geschrieben.
 
 ```ts
 import { SpeexWorkletNode, loadSpeex } from '@sapphi-red/web-noise-suppressor'
@@ -84,27 +84,27 @@ source.connect(speex)
 speex.connect(ctx.destination)
 ```
 
-For more details, see [demo source code](https://github.com/sapphi-red/web-noise-suppressor/blob/main/demo/src/index.ts).
+Weitere Details findest du im [Demo-Quellcode](https://github.com/sapphi-red/web-noise-suppressor/blob/main/demo/src/index.ts).
 
-## Configuration
+## Konfiguration
 
-### Node options
+### Node-Optionen
 
 - `SpeexWorkletNode` (`SpeexProcessorOptions`)
   - `maxChannels: number`
-  - `wasmBinary: ArrayBuffer` (from `loadSpeex`)
+  - `wasmBinary: ArrayBuffer` (von `loadSpeex`)
 - `RnnoiseWorkletNode` (`RnnoiseProcessorOptions`)
   - `maxChannels: number`
-  - `wasmBinary: ArrayBuffer` (from `loadRnnoise`)
+  - `wasmBinary: ArrayBuffer` (von `loadRnnoise`)
 - `NoiseGateWorkletNode` (`NoiseGateProcessorOptions`)
   - `openThreshold: number` (dB)
-  - `closeThreshold?: number` (dB, defaults to `openThreshold`)
+  - `closeThreshold?: number` (dB, Standardwert ist `openThreshold`)
   - `holdMs: number`
   - `maxChannels: number`
 
-### RNNoise loading
+### RNNoise laden
 
-`loadRnnoise` accepts both non-SIMD and SIMD URLs and selects one at runtime:
+`loadRnnoise` akzeptiert sowohl Nicht-SIMD- als auch SIMD-URLs und wählt zur Laufzeit eine davon aus:
 
 ```ts
 const rnnoiseWasmBinary = await loadRnnoise({
@@ -113,9 +113,9 @@ const rnnoiseWasmBinary = await loadRnnoise({
 })
 ```
 
-### Exported subpaths
+### Exportierte Subpaths
 
-The package exports:
+Das Paket exportiert:
 
 - `@sapphi-red/web-noise-suppressor`
 - `@sapphi-red/web-noise-suppressor/noiseGateWorklet.js`
@@ -125,9 +125,9 @@ The package exports:
 - `@sapphi-red/web-noise-suppressor/rnnoise_simd.wasm`
 - `@sapphi-red/web-noise-suppressor/speex.wasm`
 
-## Examples
+## Beispiele
 
-### Speex example
+### Speex-Beispiel
 
 ```ts
 import { SpeexWorkletNode, loadSpeex } from '@sapphi-red/web-noise-suppressor'
@@ -141,7 +141,7 @@ await ctx.audioWorklet.addModule(speexWorkletPath)
 const node = new SpeexWorkletNode(ctx, { wasmBinary, maxChannels: 2 })
 ```
 
-### RNNoise example
+### RNNoise-Beispiel
 
 ```ts
 import { RnnoiseWorkletNode, loadRnnoise } from '@sapphi-red/web-noise-suppressor'
@@ -159,7 +159,7 @@ await ctx.audioWorklet.addModule(rnnoiseWorkletPath)
 const node = new RnnoiseWorkletNode(ctx, { wasmBinary, maxChannels: 2 })
 ```
 
-### Noise Gate example
+### Noise-Gate-Beispiel
 
 ```ts
 import { NoiseGateWorkletNode } from '@sapphi-red/web-noise-suppressor'
@@ -176,7 +176,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 })
 ```
 
-## Project Structure
+## Projektstruktur
 
 ```text
 .
@@ -193,7 +193,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 └── package.json
 ```
 
-## Development
+## Entwicklung
 
 ### Setup
 
@@ -201,7 +201,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 pnpm install
 ```
 
-### Root scripts
+### Root-Skripte
 
 ```shell
 pnpm run build
@@ -211,7 +211,7 @@ pnpm run type-check
 pnpm run test
 ```
 
-### Demo scripts
+### Demo-Skripte
 
 ```shell
 pnpm --filter @sapphi-red/web-noise-suppressor-demo dev
@@ -219,46 +219,46 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo build
 pnpm --filter @sapphi-red/web-noise-suppressor-demo preview
 ```
 
-From `demo/package.json`, `build:all` is also available:
+Aus `demo/package.json` ist auch `build:all` verfügbar:
 
 ```shell
 pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
 ```
 
-## Development Notes
+## Hinweise zur Entwicklung
 
-- RNNoise worklet node includes a 48kHz assumption (`src/rnnoise/workletNode.ts`).
-- `RnnoiseWorkletNode` and `SpeexWorkletNode` expose `destroy()` to terminate wasm-side resources.
-- Build output is generated by `tsdown` and includes copied wasm assets into `dist/`.
-- A local patch is applied to `@shiguredo/rnnoise-wasm` via pnpm patched dependencies.
+- Der RNNoise-Worklet-Node enthält eine 48-kHz-Annahme (`src/rnnoise/workletNode.ts`).
+- `RnnoiseWorkletNode` und `SpeexWorkletNode` bieten `destroy()`, um Ressourcen auf Wasm-Seite zu beenden.
+- Das Build-Output wird von `tsdown` erzeugt und enthält kopierte Wasm-Assets in `dist/`.
+- Ein lokaler Patch wird über gepatchte pnpm-Abhängigkeiten auf `@shiguredo/rnnoise-wasm` angewendet.
 
-## Troubleshooting
+## Fehlerbehebung
 
 - `AudioWorklet is not defined`
-  - Verify browser support and secure context.
+  - Browser-Unterstützung und sicheren Kontext prüfen.
 - `Failed to execute 'addModule'`
-  - Ensure worklet JS path resolves to a valid URL at runtime.
-- wasm load failures (`fetch`/404/CORS)
-  - Confirm wasm assets are copied/served and your bundler URL import strategy is correct.
-- No audible effect
-  - Check graph wiring (`source -> node -> destination`) and whether WebRTC constraints are also enabled.
-- RNNoise behavior seems unstable
-  - Use or test with 48kHz audio context/sample rate.
+  - Sicherstellen, dass der Worklet-JS-Pfad zur Laufzeit auf eine gültige URL auflöst.
+- Wasm-Ladefehler (`fetch`/404/CORS)
+  - Prüfen, ob Wasm-Assets kopiert/ausgeliefert werden und ob die Bundler-URL-Importstrategie korrekt ist.
+- Kein hörbarer Effekt
+  - Graph-Verdrahtung prüfen (`source -> node -> destination`) und ob zusätzlich WebRTC-Constraints aktiviert sind.
+- RNNoise-Verhalten wirkt instabil
+  - Einen 48-kHz-Audiokontext/eine entsprechende Sample-Rate verwenden oder damit testen.
 
 ## Roadmap
 
-- Expand non-Vite integration documentation.
-- Add translated README variants under `i18n/`.
-- Document performance characteristics and processor tradeoffs in more detail.
+- Dokumentation für Nicht-Vite-Integrationen erweitern.
+- Übersetzte README-Varianten unter `i18n/` ergänzen.
+- Performance-Eigenschaften und Processor-Trade-offs detaillierter dokumentieren.
 
-## Contributing
+## Mitwirken
 
-Issues and pull requests are welcome:
+Issues und Pull Requests sind willkommen:
 
 - Issues: <https://github.com/sapphi-red/web-noise-suppressor/issues>
 - Repository: <https://github.com/sapphi-red/web-noise-suppressor>
 
-Before opening a PR, run:
+Vor dem Öffnen eines PRs ausführen:
 
 ```shell
 pnpm run lint
@@ -267,6 +267,6 @@ pnpm run build
 pnpm run type-check
 ```
 
-## License
+## Lizenz
 
-MIT License. See [LICENSE](./LICENSE).
+MIT License. Siehe [LICENSE](./LICENSE).
