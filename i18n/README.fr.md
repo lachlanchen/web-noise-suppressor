@@ -1,25 +1,35 @@
 [English](../README.md) · [العربية](README.ar.md) · [Español](README.es.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [中文 (简体)](README.zh-Hans.md) · [中文（繁體）](README.zh-Hant.md) · [Deutsch](README.de.md) · [Русский](README.ru.md)
 
 
+
+
 [![LazyingArt banner](https://github.com/lachlanchen/lachlanchen/raw/main/figs/banner.png)](https://github.com/lachlanchen/lachlanchen/blob/main/figs/banner.png)
 
 # @sapphi-red/web-noise-suppressor
 
-[![npm version](https://badge.fury.io/js/@sapphi-red%2Fweb-noise-suppressor.svg)](https://badge.fury.io/js/@sapphi-red/web-noise-suppressor)
-![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
-![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF)
-![License](https://img.shields.io/badge/License-MIT-22C55E)
+[![npm version](https://img.shields.io/npm/v/@sapphi-red/web-noise-suppressor?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
+[![CI](https://github.com/sapphi-red/web-noise-suppressor/workflows/CI/badge.svg)](https://github.com/sapphi-red/web-noise-suppressor/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Web Audio](https://img.shields.io/badge/Web%20Audio-Worklet-0A84FF?style=flat-square&logo=webaudio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+[![License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
+[![Downloads](https://img.shields.io/npm/dm/@sapphi-red/web-noise-suppressor?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
 [![Stars](https://img.shields.io/github/stars/sapphi-red/web-noise-suppressor?style=flat-square)](https://github.com/sapphi-red/web-noise-suppressor/stargazers)
 
-Nœuds de suppression du bruit pour Web Audio API — conçus pour le nettoyage micro en temps réel côté navigateur.
+Nœuds de suppression du bruit pour la Web Audio API — conçus pour le nettoyage en temps réel du microphone côté navigateur.
 
 [![🎧 Démo en direct](https://img.shields.io/badge/🎧-Live_Demo-0EA5E9?style=for-the-badge)](https://web-noise-suppressor.sapphi.red)
 [![📦 npm](https://img.shields.io/badge/📦-npm_Install-18181B?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor)
 
-| Focus | Ce que couvre ce README |
+| Accès rapide | Lien |
 | --- | --- |
-| Exécution | Pipeline Web Audio Worklet pour la suppression du bruit dans le navigateur |
+| 🎧 Démo en direct | [web-noise-suppressor.sapphi.red](https://web-noise-suppressor.sapphi.red) |
+| 📦 package npm | [@sapphi-red/web-noise-suppressor](https://www.npmjs.com/package/@sapphi-red/web-noise-suppressor) |
+| 📄 Points d’entrée source | [src/index.ts](https://github.com/sapphi-red/web-noise-suppressor/blob/main/src/index.ts) |
+| 🧪 Source de la démo | [demo/src/index.ts](https://github.com/sapphi-red/web-noise-suppressor/blob/main/demo/src/index.ts) |
+
+| Focus | Contenu de ce README |
+| --- | --- |
+| Exécution | Pipeline Web Audio Worklet pour la suppression de bruit dans le navigateur |
 | Sortie principale | `NoiseGateWorkletNode`, `RnnoiseWorkletNode`, `SpeexWorkletNode` |
 | Modèle d’utilisation | Charger WASM → enregistrer le processeur → instancier le nœud → connecter le graphe |
 
@@ -27,21 +37,21 @@ Ce package fournit trois nœuds de suppression du bruit.
 
 | Nœud | Description | Backend |
 | --- | --- | --- |
-| `NoiseGateWorkletNode` | Une implémentation simple de noise gate | Logique native |
+| `NoiseGateWorkletNode` | Implémentation simple d’une noise gate | Logique native |
 | `RnnoiseWorkletNode` | Suppresseur basé sur RNNoise | [xiph/rnnoise](https://github.com/xiph/rnnoise) via [shiguredo/rnnoise-wasm](https://github.com/shiguredo/rnnoise-wasm) |
 | `SpeexWorkletNode` | Suppresseur de prétraitement Speex | [xiph/speexdsp](https://github.com/xiph/speexdsp) `preprocess` via [sapphi-red/speex-preprocess-wasm](https://github.com/sapphi-red/speex-preprocess-wasm) |
 
 > [!IMPORTANT]
-> Ce package requiert `AudioWorklet` pour fonctionner.
+> Ce package nécessite `AudioWorklet` pour fonctionner.
 
 ## Aperçu
 
-`@sapphi-red/web-noise-suppressor` est une bibliothèque TypeScript orientée navigateur qui expose des wrappers `AudioWorkletNode` pour la suppression audio en temps réel des entrées. Elle est conçue pour les pipelines de microphone et peut être utilisée en complément des contraintes WebRTC du navigateur (`noiseSuppression`, `echoCancellation`) quand nécessaire.
+`@sapphi-red/web-noise-suppressor` est une bibliothèque TypeScript orientée navigateur qui expose des wrappers `AudioWorkletNode` pour nettoyer les entrées en temps réel. Elle est conçue pour les pipelines de microphone et peut être utilisée avec les contraintes WebRTC du navigateur (`noiseSuppression`, `echoCancellation`) si nécessaire.
 
 Le flux principal est :
 
 1. Charger le binaire wasm (`loadSpeex` / `loadRnnoise`).
-2. Enregistrer le module processeur du worklet (`audioWorklet.addModule(...)`).
+2. Enregistrer le module du processeur de worklet (`audioWorklet.addModule(...)`).
 3. Construire le nœud (`new SpeexWorkletNode(...)`, etc.).
 4. Connecter le graphe audio.
 
@@ -58,18 +68,18 @@ Le flux principal est :
 - [Développement](#développement)
 - [Notes de développement](#notes-de-développement)
 - [Dépannage](#dépannage)
-- [❤️ Support](#-support)
 - [Feuille de route](#feuille-de-route)
 - [Contribuer](#contribuer)
+- [❤️ Support](#-support)
 - [Licence](#licence)
 
 ## Fonctionnalités
 
-- Trois options de traitement avec un modèle d’usage Web Audio partagé.
-- Exports du point d’entrée de bibliothèque en ESM + CJS.
-- Chemins d’export dédiés pour les fichiers JS du worklet et les binaires wasm.
-- Détection SIMD de RNNoise supportée via `loadRnnoise`.
-- Application de démo (`demo/`) avec routage micro en direct et visualiseur.
+- Trois options de traitement avec un modèle d’utilisation Web Audio commun.
+- Exports de point d’entrée de bibliothèque ESM + CJS.
+- Chemins d’export dédiés pour les fichiers JS de worklet et les binaires wasm.
+- Détection SIMD RNNoise via `loadRnnoise`.
+- Application de démonstration (`demo/`) avec routage microphone en direct et visualiseur.
 
 ## Installation
 
@@ -82,8 +92,8 @@ npm i @sapphi-red/web-noise-suppressor
 ## Prérequis
 
 - Un navigateur/environnement d’exécution avec prise en charge de `AudioWorklet`.
-- Un contexte sécurisé pour la capture micro (`https://` ou localhost).
-- Une stratégie de bundler capable de fournir des références d’URL pour les fichiers JS worklet et wasm.
+- Un contexte sécurisé pour la capture du microphone (`https://` ou localhost).
+- Une stratégie de bundler capable de fournir des références d’URL pour les fichiers JS du worklet et du wasm.
   - Les exemples documentés sont orientés Vite.
 
 ## Utilisation
@@ -118,23 +128,23 @@ Pour plus de détails, voir le [code source de la démo](https://github.com/sapp
 
 ## Configuration
 
-### Options des nœuds
+### Options de nœud
 
 - `SpeexWorkletNode` (`SpeexProcessorOptions`)
   - `maxChannels: number`
-  - `wasmBinary: ArrayBuffer` (from `loadSpeex`)
+  - `wasmBinary: ArrayBuffer` (via `loadSpeex`)
 - `RnnoiseWorkletNode` (`RnnoiseProcessorOptions`)
   - `maxChannels: number`
-  - `wasmBinary: ArrayBuffer` (from `loadRnnoise`)
+  - `wasmBinary: ArrayBuffer` (via `loadRnnoise`)
 - `NoiseGateWorkletNode` (`NoiseGateProcessorOptions`)
   - `openThreshold: number` (dB)
-  - `closeThreshold?: number` (dB, `openThreshold` par défaut)
+  - `closeThreshold?: number` (`openThreshold` par défaut)
   - `holdMs: number`
   - `maxChannels: number`
 
 ### Chargement RNNoise
 
-`loadRnnoise` accepte les URL non-SIMD et SIMD et en sélectionne une à l’exécution :
+`loadRnnoise` accepte des URL non-SIMD et SIMD et en sélectionne une à l’exécution :
 
 ```ts
 const rnnoiseWasmBinary = await loadRnnoise({
@@ -225,7 +235,7 @@ const node = new NoiseGateWorkletNode(ctx, {
 
 ## Développement
 
-### Configuration
+### Installation
 
 ```shell
 pnpm install
@@ -258,42 +268,32 @@ pnpm --filter @sapphi-red/web-noise-suppressor-demo run build:all
 ## Notes de développement
 
 - Le nœud worklet RNNoise inclut une hypothèse de 48 kHz (`src/rnnoise/workletNode.ts`).
-- `RnnoiseWorkletNode` et `SpeexWorkletNode` exposent `destroy()` pour terminer les ressources côté wasm.
-- La sortie du build est générée par `tsdown` et inclut les actifs wasm copiés dans `dist/`.
-- Un patch local est appliqué à `@shiguredo/rnnoise-wasm` via les dépendances `pnpm` patchées.
+- `RnnoiseWorkletNode` et `SpeexWorkletNode` exposent `destroy()` pour libérer les ressources côté wasm.
+- Le build est généré par `tsdown` et inclut les actifs wasm copiés dans `dist/`.
+- Un patch local est appliqué à `@shiguredo/rnnoise-wasm` via les dépendances patchées de `pnpm`.
 
 ## Dépannage
 
-- `AudioWorklet is not defined`
-  - Vérifiez la prise en charge du navigateur et le contexte sécurisé.
-- `Failed to execute 'addModule'`
-  - Assurez-vous que le chemin JS du worklet résout vers une URL valide à l’exécution.
 | Symptôme | À vérifier |
 | --- | --- |
 | `AudioWorklet is not defined` | Vérifiez la prise en charge du navigateur et le contexte sécurisé. |
-| `Failed to execute 'addModule'` | Assurez-vous que le chemin JS du worklet résout vers une URL valide à l’exécution. |
-| Échecs de chargement wasm (`fetch`/404/CORS) | Confirmez que les actifs wasm sont copiés/servis et que votre stratégie d’import URL de bundler est correcte. |
+| `Failed to execute 'addModule'` | Vérifiez que le chemin JS du worklet résout vers une URL valide à l’exécution. |
+| Échecs de chargement wasm (`fetch`/404/CORS) | Vérifiez que les actifs wasm sont copiés/servis et que votre stratégie d’import d’URL du bundler est correcte. |
 | Aucun effet audible | Vérifiez le câblage du graphe (`source -> node -> destination`) et si les contraintes WebRTC sont aussi activées. |
-| Le comportement de RNNoise semble instable | Utilisez ou testez avec un taux d’échantillonnage/context audio à 48 kHz. |
-
-## ❤️ Support
-
-| Donate | PayPal | Stripe |
-|---|---|---|
-| [![Donate](https://img.shields.io/badge/Donate-LazyingArt-0EA5E9?style=for-the-badge&logo=ko-fi&logoColor=white)](https://chat.lazying.art/donate) | [![PayPal](https://img.shields.io/badge/PayPal-RongzhouChen-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/RongzhouChen) | [![Stripe](https://img.shields.io/badge/Stripe-Donate-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
+| Le comportement de RNNoise semble instable | Utilisez ou testez avec un contexte audio/un taux d’échantillonnage de 48 kHz. |
 
 ## Feuille de route
 
 - Étendre la documentation d’intégration hors Vite.
 - Ajouter des variantes de README traduites dans `i18n/`.
-- Documenter plus en détail les caractéristiques de performance et les compromis des processeurs.
+- Décrire plus en détail les caractéristiques de performance et les compromis des processeurs.
 
 ## Contribuer
 
-Les issues et pull requests sont les bienvenues :
+Issues et pull requests sont les bienvenus :
 
 - Issues : <https://github.com/sapphi-red/web-noise-suppressor/issues>
-- Repository : <https://github.com/sapphi-red/web-noise-suppressor>
+- Dépôt : <https://github.com/sapphi-red/web-noise-suppressor>
 
 Avant d’ouvrir une PR, exécutez :
 
@@ -307,3 +307,10 @@ pnpm run type-check
 ## Licence
 
 MIT License. Voir [LICENSE](./LICENSE).
+
+
+## ❤️ Support
+
+| Donate | PayPal | Stripe |
+| --- | --- | --- |
+| [![Donate](https://camo.githubusercontent.com/24a4914f0b42c6f435f9e101621f1e52535b02c225764b2f6cc99416926004b7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f446f6e6174652d4c617a79696e674172742d3045413545393f7374796c653d666f722d7468652d6261646765266c6f676f3d6b6f2d6669266c6f676f436f6c6f723d7768697465)](https://chat.lazying.art/donate) | [![PayPal](https://camo.githubusercontent.com/d0f57e8b016517a4b06961b24d0ca87d62fdba16e18bbdb6aba28e978dc0ea21/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f50617950616c2d526f6e677a686f754368656e2d3030343537433f7374796c653d666f722d7468652d6261646765266c6f676f3d70617970616c266c6f676f436f6c6f723d7768697465)](https://paypal.me/RongzhouChen) | [![Stripe](https://camo.githubusercontent.com/1152dfe04b6943afe3a8d2953676749603fb9f95e24088c92c97a01a897b4942/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f5374726970652d446f6e6174652d3633354246463f7374796c653d666f722d7468652d6261646765266c6f676f3d737472697065266c6f676f436f6c6f723d7768697465)](https://buy.stripe.com/aFadR8gIaflgfQV6T4fw400) |
